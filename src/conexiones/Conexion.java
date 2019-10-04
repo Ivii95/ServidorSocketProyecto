@@ -23,8 +23,6 @@ public class Conexion {
         } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Error al crear la conexion SQL");
         }
-									
-    
     }
         
     

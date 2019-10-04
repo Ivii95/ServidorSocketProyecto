@@ -7,11 +7,14 @@ package modelo;
 
 import java.io.Serializable;
 
+
+    
+
 public class Usuario implements Serializable{
     private int id;
     private String usuario;
     private String contrasena;
-    private int admin;
+    private boolean admin;
     private String correoRecuperacion;
     private String nombre;
     private String apellidos;
@@ -36,7 +39,7 @@ public class Usuario implements Serializable{
                 + ", comunidadAutonoma=" + comunidadAutonoma + "\n, provincia=" + provincia + "\n, ciudad=" + ciudad + "\n, domicilio=" + domicilio;
     }
     
-    public Usuario(int id, String usuario, String contrasena, int admin, String correoRecuperacion, String nombre, String apellidos, int tlf, String sexo, String nacimiento, String pais, String comunidadAutonoma, String provincia, String ciudad, String domicilio) {
+    public Usuario(int id, String usuario, String contrasena, boolean admin, String correoRecuperacion, String nombre, String apellidos, int tlf, String sexo, String nacimiento, String pais, String comunidadAutonoma, String provincia, String ciudad, String domicilio) {
         this.id = id;
         this.usuario = usuario;
         this.contrasena = contrasena;
@@ -78,11 +81,11 @@ public class Usuario implements Serializable{
         this.contrasena = contrasena;
     }
 
-    public int getAdmin() {
+    public boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(int admin) {
+    public void setAdmin(boolean admin) {
         this.admin = admin;
     }
 
