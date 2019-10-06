@@ -172,10 +172,10 @@ public class Servidor extends Thread implements Protocolo{
 	}
 	
 	private void gestionActualizarUsuario() throws IOException, ClassNotFoundException{
+            System.out.println("Usuario actualizado a:" +nombre);
 		Usuario usu = (Usuario) flujoObjEntrada.readObject();
-		int id =flujo_entrada.readInt();
-		flujo_salida.writeBoolean(consultas.ModificarUsuario(id,usu));
-                System.out.println("Usuario actualizado a:" +nombre);
+		flujo_salida.writeBoolean(consultas.ModificarUsuario(usu.getId(),usu));
+                
 	}
 	
 	private void gestionActualizarAlquiler() throws IOException, ClassNotFoundException{

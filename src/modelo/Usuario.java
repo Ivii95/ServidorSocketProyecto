@@ -6,6 +6,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 
     
@@ -20,7 +21,7 @@ public class Usuario implements Serializable{
     private String apellidos;
     private int tlf;
     private String sexo;
-    private String nacimiento;
+    private LocalDate nacimiento;
     private String pais;
     private String comunidadAutonoma;
     private String provincia;
@@ -39,7 +40,7 @@ public class Usuario implements Serializable{
                 + ", comunidadAutonoma=" + comunidadAutonoma + "\n, provincia=" + provincia + "\n, ciudad=" + ciudad + "\n, domicilio=" + domicilio;
     }
     
-    public Usuario(int id, String usuario, String contrasena, boolean admin, String correoRecuperacion, String nombre, String apellidos, int tlf, String sexo, String nacimiento, String pais, String comunidadAutonoma, String provincia, String ciudad, String domicilio) {
+    public Usuario(int id, String usuario, String contrasena, boolean admin, String correoRecuperacion, String nombre, String apellidos, int tlf, String sexo, LocalDate nacimiento, String pais, String comunidadAutonoma, String provincia, String ciudad, String domicilio) {
         this.id = id;
         this.usuario = usuario;
         this.contrasena = contrasena;
@@ -129,11 +130,11 @@ public class Usuario implements Serializable{
         this.sexo = sexo;
     }
 
-    public String getNacimiento() {
+    public LocalDate getNacimiento() {
         return nacimiento;
     }
 
-    public void setNacimiento(String nacimiento) {
+    public void setNacimiento(LocalDate nacimiento) {
         this.nacimiento = nacimiento;
     }
 

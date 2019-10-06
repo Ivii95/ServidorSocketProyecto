@@ -1,5 +1,6 @@
 package conexiones;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,7 +56,7 @@ public class Consultas extends Conexion {
                 usu.setApellidos(rs.getString("apellidos"));
                 usu.setTlf(rs.getInt("tlf"));
                 usu.setSexo(rs.getString("sexo"));
-                usu.setNacimiento(rs.getString("fech_nac"));
+                usu.setNacimiento(rs.getDate("fech_nac").toLocalDate());
                 usu.setPais(rs.getString("pais"));
                 usu.setComunidadAutonoma(rs.getString("comunidad_auto"));
                 usu.setProvincia(rs.getString("provincia"));
@@ -93,7 +94,7 @@ public class Consultas extends Conexion {
                 usu.setApellidos(rs.getString("apellidos"));
                 usu.setTlf(rs.getInt("tlf"));
                 usu.setSexo(rs.getString("sexo"));
-                usu.setNacimiento(rs.getString("fech_nac"));
+                usu.setNacimiento(rs.getDate("fech_nac").toLocalDate());
                 usu.setPais(rs.getString("pais"));
                 usu.setComunidadAutonoma(rs.getString("comunidad_auto"));
                 usu.setProvincia(rs.getString("provincia"));
@@ -121,7 +122,7 @@ public class Consultas extends Conexion {
                 alq.setUsu(this.BuscarUsuario(rs.getInt("id_usu")));
                 alq.setHoraInicio(rs.getString("hora_inicio"));
                 alq.setHoraFin(rs.getString("hora_fin"));
-                alq.setDia(rs.getString("dia"));
+                alq.setDia(rs.getDate("dia"));
                 int ocu = rs.getInt("ocupada");
                 if (ocu == 0) {
                     alq.setOcupada(false);
@@ -158,7 +159,7 @@ public class Consultas extends Conexion {
             sentencia.setString(6, usu.getApellidos());
             sentencia.setInt(7, usu.getTlf());
             sentencia.setString(8, usu.getSexo());
-            sentencia.setString(9, usu.getNacimiento());
+            sentencia.setDate(9, Date.valueOf(usu.getNacimiento()));
             sentencia.setString(10, usu.getPais());
             sentencia.setString(11, usu.getComunidadAutonoma());
             sentencia.setString(12, usu.getProvincia());
@@ -192,7 +193,7 @@ public class Consultas extends Conexion {
             sentencia.setInt(3, alq.getUsu().getId());
             sentencia.setString(4, alq.horaInicio);
             sentencia.setString(5, alq.horaFin);
-            sentencia.setString(6, alq.getDia());
+            sentencia.setDate(6, alq.getDia());
             if (alq.isOcupada()) {
                 sentencia.setInt(7, 1);
             }
@@ -248,22 +249,8 @@ public class Consultas extends Conexion {
 
     public boolean ModificarUsuario(int id, Usuario usu) {
         boolean actualizado=false;
-        String consulta = "UPDATE Usuario SET "
-                + "nom_usu = ?,"
-                + "pass = ?,"
-                + "admin = ?,"
-                + "correo = ?,"
-                + "nombre = ?,"
-                + "apellidos = ?,"
-                + "tlf = ?,"
-                + "sexo = ?,"
-                + "fech_nac = ?,"
-                + "pais = ?,"
-                + "comunidad_auto = ?,"
-                + "provincia = ?,"
-                + "ciudad = ?,"
-                + "domicilio = ?"
-                + " WHERE id = ?";
+        String consulta = "UPDATE usuarios SET nom_usu = ? ,pass = ? ,admin = ? ,correo = ? ,nombre = ?,apellidos = ? ,tlf = ? ,"
+                + "sexo = ? ,fech_nac = ? ,pais = ? ,comunidad_auto = ? ,provincia = ? ,ciudad = ? , domicilio = ? WHERE id_usu ="+id ;
         try {
             PreparedStatement sentencia = conexion.prepareStatement(consulta);
             sentencia.setString(1, usu.getUsuario());
@@ -278,14 +265,15 @@ public class Consultas extends Conexion {
             sentencia.setString(6, usu.getApellidos());
             sentencia.setInt(7, usu.getTlf());
             sentencia.setString(8, usu.getSexo());
-            sentencia.setString(9, usu.getNacimiento());
+            
+            sentencia.setDate(9, Date.valueOf(usu.getNacimiento()));
             sentencia.setString(10, usu.getPais());
             sentencia.setString(11, usu.getComunidadAutonoma());
             sentencia.setString(12, usu.getProvincia());
             sentencia.setString(13, usu.getCiudad());
             sentencia.setString(14, usu.getDomicilio());
-            sentencia.setInt(15,id);
-            if (sentencia.executeUpdate() > 0) {
+            int res=sentencia.executeUpdate();
+            if ( res> 0) {
                 actualizado = true;
             }
             sentencia.close();
@@ -298,41 +286,19 @@ public class Consultas extends Conexion {
     public boolean ModificarAlquiler(int id, Alquiler alq) {
         boolean actualizado=false;
         String consulta = "UPDATE Usuario SET "
-                + "nom_usu = ?,"
-                + "pass = ?,"
-                + "admin = ?,"
-                + "correo = ?,"
-                + "nombre = ?,"
-                + "apellidos = ?,"
-                + "tlf = ?,"
-                + "sexo = ?,"
-                + "fech_nac = ?,"
-                + "pais = ?,"
-                + "comunidad_auto = ?,"
-                + "provincia = ?,"
-                + "ciudad = ?,"
-                + "domicilio = ?"
-                + " WHERE id = ?";
+                + "id_pista = ?,"
+                + "id_usu = ?,"
+                + "hora_inicio = ?,"
+                + "hora_fin = ?,"
+                + "dia = ?"
+                + " WHERE id_horarios = ?";
         try {
             PreparedStatement sentencia = conexion.prepareStatement(consulta);
-            sentencia.setString(1, usu.getUsuario());
-            sentencia.setString(2, usu.getContrasena());
-            int admin = 0;
-            if (usu.getAdmin()) {
-                admin = 1;
-            }
-            sentencia.setInt(3, admin);
-            sentencia.setString(4, usu.getCorreoRecuperacion());
-            sentencia.setString(5, usu.getNombre());
-            sentencia.setString(6, usu.getApellidos());
-            sentencia.setInt(7, usu.getTlf());
-            sentencia.setString(8, usu.getSexo());
-            sentencia.setString(9, usu.getNacimiento());
-            sentencia.setString(10, usu.getPais());
-            sentencia.setString(11, usu.getComunidadAutonoma());
-            sentencia.setString(12, usu.getProvincia());
-            sentencia.setString(13, usu.getCiudad());
-            sentencia.setString(14, usu.getDomicilio());
+            sentencia.setInt(id, alq.getP().getId());
+            sentencia.setInt(2, alq.getUsu().getId());
+            sentencia.setString(3, alq.getHoraInicio());
+            sentencia.setString(4, alq.getHoraFin());
+            sentencia.setDate(5, alq.getDia());
             sentencia.setInt(15,id);
             if (sentencia.executeUpdate() > 0) {
                 actualizado = true;
@@ -364,7 +330,7 @@ public class Consultas extends Conexion {
                 usu.setApellidos(rs.getString("apellidos"));
                 usu.setTlf(rs.getInt("tlf"));
                 usu.setSexo(rs.getString("sexo"));
-                usu.setNacimiento(rs.getString("fech_nac"));
+                usu.setNacimiento(rs.getDate("fech_nac").toLocalDate());
                 usu.setPais(rs.getString("pais"));
                 usu.setComunidadAutonoma(rs.getString("comunidad_auto"));
                 usu.setProvincia(rs.getString("provincia"));
@@ -392,7 +358,7 @@ public class Consultas extends Conexion {
                 alq.setUsu(this.BuscarUsuario(rs.getInt("id_usu")));
                 alq.setHoraInicio(rs.getString("hora_inicio"));
                 alq.setHoraFin(rs.getString("hora_fin"));
-                alq.setDia(rs.getString("dia"));
+                alq.setDia(rs.getDate("dia"));
                 int ocu = rs.getInt("ocupada");
                 if (ocu == 0) {
                     alq.setOcupada(false);
@@ -405,7 +371,6 @@ public class Consultas extends Conexion {
         } catch (SQLException e) {
             System.out.println("Error en la consulta de buscar un alquiler");
         }
-
         return alq;
     }
 
