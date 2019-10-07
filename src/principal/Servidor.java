@@ -144,9 +144,7 @@ public class Servidor extends Thread implements Protocolo{
 	private void gestionInsertarUsuario() throws IOException, ClassNotFoundException{
 		Usuario usu = (Usuario) flujoObjEntrada.readObject();
 		flujo_salida.writeBoolean(consultas.insertarUsuario(usu));
-                
 		System.out.println("Usuario insertado a:" +nombre);
-		
 	}
 	
 	private void gestionInsertarAlquiler() throws IOException, ClassNotFoundException{
@@ -160,7 +158,6 @@ public class Servidor extends Thread implements Protocolo{
 	private void gestionBorrarUsuario() throws IOException, ClassNotFoundException{
 		int id = (int) flujoObjEntrada.readObject();
 		flujo_salida.writeBoolean(consultas.BorrarUsuario(id));
-                
 		System.out.println("Usuario borrado a:" +nombre);
 		
 	}

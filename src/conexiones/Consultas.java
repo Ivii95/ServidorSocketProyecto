@@ -38,8 +38,6 @@ public class Consultas extends Conexion {
         String sql = "select * from usuarios where usuarios.nom_usu='" + usuario + "' and usuarios.pass='" + pass + "'";
 
         try {
-            System.out.println("intentando loguear: " + usuario + "|" + pass);
-
             //sentencia.setString(1, usuario);
             //sentencia.setString(2, pass);
             ResultSet rs = sentencia.executeQuery(sql);
@@ -166,16 +164,13 @@ public class Consultas extends Conexion {
             sentencia.setString(13, usu.getCiudad());
             sentencia.setString(14, usu.getDomicilio());
             int res = sentencia.executeUpdate();
-
             if (res > 0) {
                 insertado = true;
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         return insertado;
     }
 
