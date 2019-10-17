@@ -5,11 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import modelo.*;
+import Modelos.Alquiler;
+import Modelos.Pista;
+import Modelos.Usuario;
+import java.sql.Time;
 
 public class Consultas extends Conexion {
 
@@ -27,8 +30,12 @@ public class Consultas extends Conexion {
     }
 
     public Usuario getUsuario() {
-        System.out.println(usu.getNombre());
+        System.out.println(usu.getNacimiento());
         return usu;
+    }
+
+    public LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
+        return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
     }
 
     public boolean validarUsuario(String usuario, String pass) {
@@ -54,7 +61,7 @@ public class Consultas extends Conexion {
                 usu.setApellidos(rs.getString("apellidos"));
                 usu.setTlf(rs.getInt("tlf"));
                 usu.setSexo(rs.getString("sexo"));
-                usu.setNacimiento(rs.getDate("fech_nac").toLocalDate());
+                usu.setNacimiento(convertToLocalDateViaSqlDate(rs.getDate("fech_nac")));
                 usu.setPais(rs.getString("pais"));
                 usu.setComunidadAutonoma(rs.getString("comunidad_auto"));
                 usu.setProvincia(rs.getString("provincia"));
@@ -92,7 +99,7 @@ public class Consultas extends Conexion {
                 usu.setApellidos(rs.getString("apellidos"));
                 usu.setTlf(rs.getInt("tlf"));
                 usu.setSexo(rs.getString("sexo"));
-                usu.setNacimiento(rs.getDate("fech_nac").toLocalDate());
+                usu.setNacimiento(convertToLocalDateViaSqlDate(rs.getDate("fech_nac")));
                 usu.setPais(rs.getString("pais"));
                 usu.setComunidadAutonoma(rs.getString("comunidad_auto"));
                 usu.setProvincia(rs.getString("provincia"));
@@ -107,7 +114,7 @@ public class Consultas extends Conexion {
     }
 
     public ArrayList<Alquiler> ListarAlquileres() {
-        String sql = "select * from 'alquiler'";
+        String sql = "select * from alquiler";
         ArrayList<Alquiler> Users = new ArrayList<Alquiler>();
         try {
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -118,16 +125,16 @@ public class Consultas extends Conexion {
                 alq.setId(rs.getInt("id_horario"));
                 alq.setP(this.BuscarPista(rs.getInt("id_pista")));
                 alq.setUsu(this.BuscarUsuario(rs.getInt("id_usu")));
-                alq.setHoraInicio(rs.getString("hora_inicio"));
-                alq.setHoraFin(rs.getString("hora_fin"));
-                alq.setDia(rs.getDate("dia"));
-                int ocu = rs.getInt("ocupada");
+                alq.setHoraInicio(rs.getTime("hora_inicio").toLocalTime());
+                alq.setHoraFin(rs.getTime("hora_fin").toLocalTime());
+                alq.setDia(rs.getDate("dia").toLocalDate());
+                /*int ocu = rs.getInt("ocupada");
                 if (ocu == 0) {
                     alq.setOcupada(false);
                 }
                 if (ocu == 1) {
                     alq.setOcupada(true);
-                }
+                }*/
                 Users.add(alq);
             }
         } catch (SQLException e) {
@@ -186,9 +193,9 @@ public class Consultas extends Conexion {
             sentencia.setInt(1, alq.getId());
             sentencia.setInt(2, alq.getP().getId());
             sentencia.setInt(3, alq.getUsu().getId());
-            sentencia.setString(4, alq.horaInicio);
-            sentencia.setString(5, alq.horaFin);
-            sentencia.setDate(6, alq.getDia());
+            sentencia.setTime(4, Time.valueOf(alq.horaInicio));
+            sentencia.setTime(5, Time.valueOf(alq.horaFin));
+            sentencia.setDate(6, Date.valueOf(alq.getDia()));
             if (alq.isOcupada()) {
                 sentencia.setInt(7, 1);
             }
@@ -243,9 +250,9 @@ public class Consultas extends Conexion {
     }
 
     public boolean ModificarUsuario(int id, Usuario usu) {
-        boolean actualizado=false;
+        boolean actualizado = false;
         String consulta = "UPDATE usuarios SET nom_usu = ? ,pass = ? ,admin = ? ,correo = ? ,nombre = ?,apellidos = ? ,tlf = ? ,"
-                + "sexo = ? ,fech_nac = ? ,pais = ? ,comunidad_auto = ? ,provincia = ? ,ciudad = ? , domicilio = ? WHERE id_usu ="+id ;
+                + "sexo = ? ,fech_nac = ? ,pais = ? ,comunidad_auto = ? ,provincia = ? ,ciudad = ? , domicilio = ? WHERE id_usu =" + id;
         try {
             PreparedStatement sentencia = conexion.prepareStatement(consulta);
             sentencia.setString(1, usu.getUsuario());
@@ -260,15 +267,15 @@ public class Consultas extends Conexion {
             sentencia.setString(6, usu.getApellidos());
             sentencia.setInt(7, usu.getTlf());
             sentencia.setString(8, usu.getSexo());
-            
+
             sentencia.setDate(9, Date.valueOf(usu.getNacimiento()));
             sentencia.setString(10, usu.getPais());
             sentencia.setString(11, usu.getComunidadAutonoma());
             sentencia.setString(12, usu.getProvincia());
             sentencia.setString(13, usu.getCiudad());
             sentencia.setString(14, usu.getDomicilio());
-            int res=sentencia.executeUpdate();
-            if ( res> 0) {
+            int res = sentencia.executeUpdate();
+            if (res > 0) {
                 actualizado = true;
             }
             sentencia.close();
@@ -279,7 +286,7 @@ public class Consultas extends Conexion {
     }
 
     public boolean ModificarAlquiler(int id, Alquiler alq) {
-        boolean actualizado=false;
+        boolean actualizado = false;
         String consulta = "UPDATE Usuario SET "
                 + "id_pista = ?,"
                 + "id_usu = ?,"
@@ -291,10 +298,10 @@ public class Consultas extends Conexion {
             PreparedStatement sentencia = conexion.prepareStatement(consulta);
             sentencia.setInt(id, alq.getP().getId());
             sentencia.setInt(2, alq.getUsu().getId());
-            sentencia.setString(3, alq.getHoraInicio());
-            sentencia.setString(4, alq.getHoraFin());
-            sentencia.setDate(5, alq.getDia());
-            sentencia.setInt(15,id);
+            sentencia.setTime(3, Time.valueOf(alq.getHoraInicio()));
+            sentencia.setTime(4, Time.valueOf(alq.getHoraFin()));
+            sentencia.setDate(5, Date.valueOf(alq.getDia()));
+            sentencia.setInt(15, id);
             if (sentencia.executeUpdate() > 0) {
                 actualizado = true;
             }
@@ -319,6 +326,8 @@ public class Consultas extends Conexion {
                 usu.setContrasena(rs.getString("pass"));
                 if (rs.getInt("admin") == 1) {
                     usu.setAdmin(true);
+                }else{
+                    usu.setAdmin(false);
                 }
                 usu.setCorreoRecuperacion(rs.getString("correo"));
                 usu.setNombre(rs.getString("nombre"));
@@ -351,16 +360,16 @@ public class Consultas extends Conexion {
                 alq.setId(rs.getInt("id_horario"));
                 alq.setP(this.BuscarPista(rs.getInt("id_pista")));
                 alq.setUsu(this.BuscarUsuario(rs.getInt("id_usu")));
-                alq.setHoraInicio(rs.getString("hora_inicio"));
-                alq.setHoraFin(rs.getString("hora_fin"));
-                alq.setDia(rs.getDate("dia"));
-                int ocu = rs.getInt("ocupada");
+                alq.setHoraInicio(rs.getTime("hora_inicio").toLocalTime());
+                alq.setHoraFin(rs.getTime("hora_fin").toLocalTime());
+                alq.setDia(rs.getDate("dia").toLocalDate());
+                /*int ocu = rs.getInt("ocupada");
                 if (ocu == 0) {
                     alq.setOcupada(false);
                 }
                 if (ocu == 1) {
                     alq.setOcupada(true);
-                }
+                }*/
             }
             sentencia.close();
         } catch (SQLException e) {
@@ -380,7 +389,7 @@ public class Consultas extends Conexion {
                 pi.setId(rs.getInt("id_pista"));
                 pi.setTipo(rs.getString("tipo"));
                 pi.setNum(rs.getInt("num"));
-                pi.setPrecioHora(rs.getFloat("precio_hora"));
+                //pi.setPrecioHora(rs.getFloat("precio_hora"));
             }
             sentencia.close();
         } catch (SQLException e) {

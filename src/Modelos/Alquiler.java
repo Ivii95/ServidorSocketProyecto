@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modelo;
+package Modelos;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  *
@@ -16,11 +17,18 @@ public class Alquiler implements Serializable{
     public int id;
     public Pista p;
     public Usuario usu;
-    public String horaInicio,horaFin;
-    public Date dia;
+    public LocalTime horaInicio,horaFin;
+    public LocalDate dia;
     public boolean ocupada;
 
-    public Alquiler(int id, Pista p, Usuario usu, String horaInicio, String horaFin, Date dia, boolean ocupada) {
+    
+    
+
+    public Alquiler() {
+		// TODO Auto-generated constructor stub
+	}
+
+    public Alquiler(int id, Pista p, Usuario usu, LocalTime horaInicio, LocalTime horaFin, LocalDate dia, boolean ocupada) {
         this.id = id;
         this.p = p;
         this.usu = usu;
@@ -29,14 +37,17 @@ public class Alquiler implements Serializable{
         this.dia = dia;
         this.ocupada = ocupada;
     }
-    
 
-    public Alquiler() {
-		// TODO Auto-generated constructor stub
-	}
+    public Alquiler(Pista p, Usuario usu, LocalTime horaInicio, LocalTime horaFin, LocalDate dia, boolean ocupada) {
+        this.p = p;
+        this.usu = usu;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+        this.dia = dia;
+        this.ocupada = ocupada;
+    }
 
-
-	public int getId() {
+    public int getId() {
         return id;
     }
 
@@ -60,27 +71,27 @@ public class Alquiler implements Serializable{
         this.usu = usu;
     }
 
-    public String getHoraInicio() {
+    public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
-    public void setHoraInicio(String horaInicio) {
+    public void setHoraInicio(LocalTime horaInicio) {
         this.horaInicio = horaInicio;
     }
 
-    public String getHoraFin() {
+    public LocalTime getHoraFin() {
         return horaFin;
     }
 
-    public void setHoraFin(String horaFin) {
+    public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
     }
 
-    public Date getDia() {
+    public LocalDate getDia() {
         return dia;
     }
 
-    public void setDia(Date dia) {
+    public void setDia(LocalDate dia) {
         this.dia = dia;
     }
 
@@ -92,5 +103,6 @@ public class Alquiler implements Serializable{
         this.ocupada = ocupada;
     }
     
+
     
 }
