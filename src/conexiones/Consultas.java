@@ -1,5 +1,8 @@
 package conexiones;
 
+import Modelos.Alquiler;
+import Modelos.Pista;
+import Modelos.Usuario;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,9 +12,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import Modelos.Alquiler;
-import Modelos.Pista;
-import Modelos.Usuario;
 import java.sql.Time;
 
 public class Consultas extends Conexion {
@@ -73,7 +73,7 @@ public class Consultas extends Conexion {
         } catch (SQLException e) {
             System.out.println("Error en la consulta de loguear");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error en la consulta de loguear");
         }
 
         return resul;
@@ -82,7 +82,7 @@ public class Consultas extends Conexion {
 
     public ArrayList<Usuario> ListarUsuarios() {
         String sql = "select * from usuarios";
-        ArrayList<Usuario> Users = new ArrayList<Usuario>();
+        ArrayList<Usuario> Users = new ArrayList<>();
         try {
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             ResultSet rs = sentencia.executeQuery();
@@ -115,7 +115,7 @@ public class Consultas extends Conexion {
 
     public ArrayList<Alquiler> ListarAlquileres() {
         String sql = "select * from alquiler";
-        ArrayList<Alquiler> Users = new ArrayList<Alquiler>();
+        ArrayList<Alquiler> Users = new ArrayList<>();
         try {
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             ResultSet rs = sentencia.executeQuery();
@@ -127,20 +127,33 @@ public class Consultas extends Conexion {
                 alq.setUsu(this.BuscarUsuario(rs.getInt("id_usu")));
                 alq.setHoraInicio(rs.getTime("hora_inicio").toLocalTime());
                 alq.setHoraFin(rs.getTime("hora_fin").toLocalTime());
-                alq.setDia(rs.getDate("dia").toLocalDate());
-                /*int ocu = rs.getInt("ocupada");
-                if (ocu == 0) {
-                    alq.setOcupada(false);
-                }
-                if (ocu == 1) {
-                    alq.setOcupada(true);
-                }*/
+                alq.setDia(convertToLocalDateViaSqlDate(rs.getDate("dia")));
                 Users.add(alq);
             }
         } catch (SQLException e) {
             System.out.println("Error en la consulta para mostrar los alquileres");
         }
         return Users;
+    }
+
+    public ArrayList<Pista> ListarPistas() {
+        String sql = "select * from pistas";
+        ArrayList<Pista> Pistas = new ArrayList<>();
+        try {
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+            ResultSet rs = sentencia.executeQuery();
+
+            while (rs.next()) {
+                Pista p = new Pista();
+                p.setId(rs.getInt("id_pista"));
+                p.setTipo(rs.getString("tipo"));
+                p.setNum(rs.getInt("num"));
+                Pistas.add(p);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error en la consulta para mostrar las pistas");
+        }
+        return Pistas;
     }
 
     public boolean insertarUsuario(Usuario usu) {
@@ -184,8 +197,8 @@ public class Consultas extends Conexion {
     public boolean insertarAlquiler(Alquiler alq) {
         boolean insertado = false;
 
-        String sql = "insert into alquiler (id_horario,id_pista,id_usu,hora_inicio,hora_fin,dia,ocupada)"
-                + "values(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into alquiler (id_horario,id_pista,id_usu,hora_inicio,hora_fin,dia)"
+                + "values(?, ?, ?, ?, ?, ?)";
 
         try {
 
@@ -196,14 +209,7 @@ public class Consultas extends Conexion {
             sentencia.setTime(4, Time.valueOf(alq.horaInicio));
             sentencia.setTime(5, Time.valueOf(alq.horaFin));
             sentencia.setDate(6, Date.valueOf(alq.getDia()));
-            if (alq.isOcupada()) {
-                sentencia.setInt(7, 1);
-            }
-            if (!alq.isOcupada()) {
-                sentencia.setInt(7, 0);
-            }
             int res = sentencia.executeUpdate();
-
             if (res > 0) {
                 insertado = true;
             }
@@ -326,7 +332,7 @@ public class Consultas extends Conexion {
                 usu.setContrasena(rs.getString("pass"));
                 if (rs.getInt("admin") == 1) {
                     usu.setAdmin(true);
-                }else{
+                } else {
                     usu.setAdmin(false);
                 }
                 usu.setCorreoRecuperacion(rs.getString("correo"));

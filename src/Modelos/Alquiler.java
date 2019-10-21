@@ -13,38 +13,24 @@ import java.time.LocalTime;
  *
  * @author DAM2
  */
-public class Alquiler implements Serializable{
+public class Alquiler implements Serializable {
+
     public int id;
     public Pista p;
     public Usuario usu;
-    public LocalTime horaInicio,horaFin;
+    public LocalTime horaInicio, horaFin;
     public LocalDate dia;
-    public boolean ocupada;
 
-    
-    
-
-    public Alquiler() {
-		// TODO Auto-generated constructor stub
-	}
-
-    public Alquiler(int id, Pista p, Usuario usu, LocalTime horaInicio, LocalTime horaFin, LocalDate dia, boolean ocupada) {
-        this.id = id;
+    public Alquiler(Pista p, Usuario usu, LocalTime horaInicio, LocalTime horaFin, LocalDate dia) {
         this.p = p;
         this.usu = usu;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.dia = dia;
-        this.ocupada = ocupada;
     }
 
-    public Alquiler(Pista p, Usuario usu, LocalTime horaInicio, LocalTime horaFin, LocalDate dia, boolean ocupada) {
-        this.p = p;
-        this.usu = usu;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
-        this.dia = dia;
-        this.ocupada = ocupada;
+    public Alquiler() {
+        
     }
 
     public int getId() {
@@ -95,14 +81,4 @@ public class Alquiler implements Serializable{
         this.dia = dia;
     }
 
-    public boolean isOcupada() {
-        return ocupada;
-    }
-
-    public void setOcupada(boolean ocupada) {
-        this.ocupada = ocupada;
-    }
-    
-
-    
 }

@@ -14,25 +14,16 @@ import java.io.Serializable;
 public class Pista implements Serializable{
     public int id,num;
     public String tipo;
-    public float precioHora;
 
-    public Pista(int id, int num, String tipo, float precioHora) {
+    public Pista(int id, int num, String tipo) {
         this.id = id;
         this.num = num;
         this.tipo = tipo;
-        this.precioHora = precioHora;
     }
 
     public Pista() {
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-    public String toString() {
-        return "Pistas: " + "id=" + id + ", num=" + num + ", tipo=" + tipo + ", precioHora=" + precioHora;
+        
     }
-    
-
     public int getId() {
         return id;
     }
@@ -55,14 +46,6 @@ public class Pista implements Serializable{
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public float getPrecioHora() {
-        return precioHora;
-    }
-
-    public void setPrecioHora(float precioHora) {
-        this.precioHora = precioHora;
     }
     
 }
